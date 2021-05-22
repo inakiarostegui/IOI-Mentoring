@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <cstddef>
 
 #include <string>
 #include <vector>
@@ -19,6 +20,7 @@
 #include <cassert>
 #include <unordered_map>
 #include <type_traits>
+#include <span>
 
 // Windows API
 #define WIN32_LEAN_AND_MEAN

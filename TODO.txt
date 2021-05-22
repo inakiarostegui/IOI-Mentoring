@@ -10,11 +10,17 @@ where is the first field of a struct?
 ALIGNMENT
 alignment of fields, alignment of types, padding.
 behavior when in arrays.
+use & to validate your assumptions on padding and offsets of fields in structs
 
 SIZEOF operator
 how does it behave on a pointer?
 how on a string literal?
 what about an array? (e.g. int a[3]; sizeof(a)? )
+use sizeof to validate your assumptions on the size of objects
+now derive a class from a base class and see what sizeof gives you.
+what if the base class has virtual functions?
+what if you derive from multiple base classes?
+this ties into the vftbl I mentioned last time.
 
 POINTER ARITHMETIC
 
@@ -24,8 +30,6 @@ behavior of rvalue references in templates (what happens if you pass a & to a T&
 std::forward and how to use it in templates
 std::move, why is it needed on something that is already being passed as an rvalue?
 move constructors, move assignment, and similar... try implement and debug them all on the Vector<T>
-
---------------------------------
 
 PASS BY VAL/REF
 how does the compiler actually passes arguments? registers? stack? how is a large struct passed or returned?	
@@ -38,12 +42,7 @@ does const correctness affect compiler output? (relates to the point above)
 transitive / non transitive behavior of const (e.g. what happens to a pointer in a const struct? what about the type pointed?)
 mutable, what it does? for what it can be used? shall it ever be used? mutable lambdas
 
-use sizeof to validate your assumptions on the size of objects
-use & to validate your assumptions on padding and offsets of fields in structs
-now derive a class from a base class and see what sizeof gives you.
-what if the base class has virtual functions?
-what if you derive from multiple base classes?
-this ties into the vftbl I mentioned last time.
+--------------------------------
 
 MEMORY MANAGEMENT
 //assume byte is a typedef for unsigned char, or uint8_t, or std::byte

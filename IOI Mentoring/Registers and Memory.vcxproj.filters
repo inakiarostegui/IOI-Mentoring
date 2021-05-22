@@ -24,6 +24,12 @@
     <ClCompile Include="UnitTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Allocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UnitTest.h">
@@ -42,6 +48,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="UnitTests.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IAllocator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
