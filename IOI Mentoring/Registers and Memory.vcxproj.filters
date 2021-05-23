@@ -27,7 +27,10 @@
     <ClCompile Include="IAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Allocator.cpp">
+    <ClCompile Include="LinearAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StackAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +56,10 @@
     <ClInclude Include="IAllocator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Allocator.h">
+    <ClInclude Include="LinearAllocator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StackAllocator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

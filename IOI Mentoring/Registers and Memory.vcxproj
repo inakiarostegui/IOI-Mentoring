@@ -147,7 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Allocator.cpp" />
+    <ClCompile Include="LinearAllocator.cpp" />
     <ClCompile Include="IAllocator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -156,13 +156,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="StackAllocator.cpp" />
     <ClCompile Include="UnitTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Allocator.h" />
+    <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="DebugPrint.h" />
     <ClInclude Include="IAllocator.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="StackAllocator.h" />
     <ClInclude Include="UnitTest.h" />
     <ClInclude Include="UnitTests.h" />
     <ClInclude Include="Vector.h" />

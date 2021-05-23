@@ -9,37 +9,72 @@
 #include "UnitTest.h"
 #include "Vector.h"
 #include "VectorTestClass.h"
+#include "LinearAllocator.h"
+#include "StackAllocator.h"
 
 const std::string PASS = "PASS";
 const std::string FAIL = "FAIL";
 
-std::vector<UnitTest> unit_tests =
+const std::array<std::string, 2> UT_TITLES = { "MOVE SEMANTICS", "ALLOCATORS" };
+
+// Contains the unit tests by categories
+std::unordered_map<e_UnitTestTypes, std::vector<UnitTest>> unit_tests =
 {
-    {"MOVE ASSIGNMENT",     &unit_test_move_assignment},
-    {"MOVE CONSTRUCTOR 0",  &unit_test_move_semantics_0},
-    {"MOVE CONSTRUCTOR 1",  &unit_test_move_semantics_1},
-    {"PUSH LVALUE 0",       &unit_test_push_lvalue_0},
-    {"PUSH LVALUE 1",       &unit_test_push_lvalue_1},
-    {"PUSH RVALUE 0",       &unit_test_push_rvalue_0},
-    {"PUSH RVALUE 1",       &unit_test_push_rvalue_1},
-    {"PUSH RVALUE 2",       &unit_test_push_rvalue_2},
-    {"EMPLACE LVALUE 0",    &unit_test_emplace_lvalue_0},
-    {"EMPLACE LVALUE 1",    &unit_test_emplace_lvalue_1},
-    {"EMPLACE RVALUE 0",    &unit_test_emplace_rvalue_0},
-    {"EMPLACE RVALUE 1",    &unit_test_emplace_rvalue_1},
-    {"EMPLACE RVALUE 2",    &unit_test_emplace_rvalue_2},
+    std::make_pair
+    (
+        e_UnitTestTypes::e_move_semantics, 
+        std::vector<UnitTest>
+        {
+            UnitTest{"MOVE ASSIGNMENT",     &unit_test_move_assignment},
+            UnitTest{"MOVE CONSTRUCTOR 0",  &unit_test_move_semantics_0},
+            UnitTest{"MOVE CONSTRUCTOR 1",  &unit_test_move_semantics_1},
+            UnitTest{"PUSH LVALUE 0",       &unit_test_push_lvalue_0},
+            UnitTest{"PUSH LVALUE 1",       &unit_test_push_lvalue_1},
+            UnitTest{"PUSH RVALUE 0",       &unit_test_push_rvalue_0},
+            UnitTest{"PUSH RVALUE 1",       &unit_test_push_rvalue_1},
+            UnitTest{"PUSH RVALUE 2",       &unit_test_push_rvalue_2},
+            UnitTest{"EMPLACE LVALUE 0",    &unit_test_emplace_lvalue_0},
+            UnitTest{"EMPLACE LVALUE 1",    &unit_test_emplace_lvalue_1},
+            UnitTest{"EMPLACE RVALUE 0",    &unit_test_emplace_rvalue_0},
+            UnitTest{"EMPLACE RVALUE 1",    &unit_test_emplace_rvalue_1},
+            UnitTest{"EMPLACE RVALUE 2",    &unit_test_emplace_rvalue_2},
+        }
+    ),
+    std::make_pair
+    (
+        e_UnitTestTypes::e_allocators,
+        std::vector<UnitTest>
+        {
+            UnitTest{"LINEAR INIT",         &unit_test_alloc_linear_init},
+            UnitTest{"LINEAR ALLOCATE 0",   &unit_test_alloc_linear_allocate_0},
+            UnitTest{"LINEAR ALLOCATE 1",   &unit_test_alloc_linear_allocate_1},
+            UnitTest{"LINEAR FREE 0",       &unit_test_alloc_linear_free_0},
+            UnitTest{"LINEAR INIT CLEAR",   &unit_test_alloc_linear_init_clear},
+            UnitTest{"STACK INIT 0",        &unit_test_alloc_stack_init},
+            UnitTest{"STACK ALLOCATE 0",    &unit_test_alloc_stack_allocate_0},
+            UnitTest{"STACK ALLOCATE 1",    &unit_test_alloc_stack_allocate_1},
+            UnitTest{"STACK FREE 0",        &unit_test_alloc_stack_free_0},
+            UnitTest{"STACK FREE 1",        &unit_test_alloc_stack_free_1},
+            UnitTest{"STACK CLEAR",         &unit_test_alloc_stack_clear},
+            UnitTest{"STACK INIT CLEAR",    &unit_test_alloc_stack_init_clear},
+        }
+    ),
+
 };
 
-void run_unit_tests()
+void run_unit_tests(std::vector<e_UnitTestTypes>&& test_types_to_run)
 {
-    debug_print("-------------------------");
-
-    for (unsigned i = 0u; i < unit_tests.size(); i++)
+    for (unsigned i = 0u; i < test_types_to_run.size(); i++)
     {
-        std::cout << unit_tests[i].m_test_name << ": " << std::endl;
-        std::cout << "RESULT: " << (unit_tests[i].m_test_fn() ? PASS : FAIL);
-        std::cout << std::endl;
-        debug_print("-------------------------");
+        debug_print("--------------" + UT_TITLES[static_cast<int>(test_types_to_run[i])] + "--------------");
+
+        for (unsigned j = 0u; j < unit_tests[test_types_to_run[i]].size(); j++)
+        {
+            std::cout << unit_tests[test_types_to_run[i]][j].m_test_name << ": " << std::endl;
+            std::cout << "RESULT: " << (unit_tests[test_types_to_run[i]][j].m_test_fn() ? PASS : FAIL);
+            std::cout << std::endl;
+            debug_print("-------------------------");
+        }
     }
 }
 
@@ -190,6 +225,139 @@ bool unit_test_emplace_rvalue_2()
 #pragma endregion
 #pragma endregion
 #pragma endregion
+
+#pragma region ALLOCATOR UT
+#pragma region LINEAR ALLOCATOR UT
+bool unit_test_alloc_linear_init()
+{
+    LinearAllocator la;
+    std::byte* buffer;
+    la.Init(buffer, 48);
+
+    return la.GetBufferSize() == 48u;
+}
+
+bool unit_test_alloc_linear_allocate_0()
+{
+    LinearAllocator la;
+    std::byte* buffer;
+    la.Init(buffer, 48);
+    la.Allocate(20);
+
+    return la.GetOffset() == 20u;
+}
+
+bool unit_test_alloc_linear_allocate_1()
+{
+    LinearAllocator la;
+    std::byte* buffer;
+    la.Init(buffer, 48);
+    la.Allocate(20);
+    la.Allocate(30);
+
+    return la.GetOffset() == 20u;
+}
+
+bool unit_test_alloc_linear_free_0()
+{
+    LinearAllocator la;
+    std::byte* buffer;
+    la.Init(buffer, 48);
+    la.Allocate(20);
+    la.Free();
+
+    return buffer == nullptr;
+}
+
+bool unit_test_alloc_linear_init_clear()
+{
+    LinearAllocator la;
+    std::byte* buffer;
+    la.Init(buffer, 48);
+    la.Allocate(20);
+    la.Init(buffer, 36);
+
+    return la.GetBufferSize() == 36u;
+}
+#pragma endregion
+
+#pragma region STACK ALLOCATOR UT
+bool unit_test_alloc_stack_init()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+
+    return sa.GetBufferSize() == 48u;
+}
+
+bool unit_test_alloc_stack_allocate_0()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+    sa.Allocate(20);
+
+    return sa.GetOffset() == 20 && sa.GetAmountOfBlocks() == 1u;
+}
+
+bool unit_test_alloc_stack_allocate_1()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+    sa.Allocate(20);
+    sa.Allocate(30);
+
+    return sa.GetOffset() == 20 && sa.GetAmountOfBlocks() == 1u;
+}
+
+bool unit_test_alloc_stack_free_0()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+    sa.Allocate(20);
+    sa.Allocate(20);
+
+    return sa.GetOffset() == 20 && sa.GetAmountOfBlocks() == 1u;
+}
+
+bool unit_test_alloc_stack_free_1()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+    sa.Free();
+
+    return sa.GetBufferSize() == 48u;
+}
+
+bool unit_test_alloc_stack_clear()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+    sa.Clear();
+
+    return buffer == nullptr;
+}
+
+bool unit_test_alloc_stack_init_clear()
+{
+    StackAllocator sa;
+    std::byte* buffer;
+    sa.Init(buffer, 48);
+    sa.Allocate(20);
+    sa.Init(buffer, 36);
+
+    return sa.GetBufferSize() == 36u && sa.GetOffset() == 0u && sa.GetAmountOfBlocks() == 0;
+}
+#pragma endregion
+#pragma endregion
+
+
+
 
 // TODO: VECTOR UT
 

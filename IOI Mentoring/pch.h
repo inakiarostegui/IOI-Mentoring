@@ -13,6 +13,7 @@
 #include <cstddef>
 
 #include <string>
+#include <array>
 #include <vector>
 #include <iostream>
 #include <cstring>
@@ -21,6 +22,9 @@
 #include <unordered_map>
 #include <type_traits>
 #include <span>
+#include <stack>
+#include <list>
+#include <algorithm>
 
 // Windows API
 #define WIN32_LEAN_AND_MEAN
