@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @filename StackAllocator.h
+ * @filename StackAllocator.cpp
  * @brief	 Contains the stack allocator class function implementations.
  * @author   Inaki Arostegui
  ******************************************************************************/
@@ -7,18 +7,18 @@
 #include "pch.h"
 #include "StackAllocator.h"
 
-void StackAllocator::Init(std::byte*& memory_buffer, const unsigned memory_buffer_length_in_bytes)
+std::byte** StackAllocator::Init(const unsigned memory_buffer_length_in_bytes)
 {
-	// If theres an existing buffer then clear it to recreate it
+	// If theres an existing buffer then reset it to recreate it
 	if (m_buffer != nullptr)
-		Clear();
+		Reset();
 
 	// Allocate requested memory
 	m_buffer = new std::byte[memory_buffer_length_in_bytes];
-	// Send buffer pointer to user
-	memory_buffer = m_buffer;
 
 	m_buffer_size = memory_buffer_length_in_bytes;
+
+	return &m_buffer;
 }
 
 void* StackAllocator::Allocate(const unsigned size_in_bytes)
@@ -46,6 +46,15 @@ void StackAllocator::Free()
 }
 
 void StackAllocator::Clear()
+{
+	// Resets all data
+	m_offset = 0u;
+	
+	while (!m_headers.empty())
+		m_headers.pop();
+}
+
+void StackAllocator::Reset()
 {
 	// Free the allocated memory and reset all other data
 	delete[] m_buffer;

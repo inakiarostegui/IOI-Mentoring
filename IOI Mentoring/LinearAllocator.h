@@ -13,16 +13,18 @@ class LinearAllocator : public IAllocator
 public:
 	~LinearAllocator()
 	{
-		Free();
+		Reset();
 	}
 
-	void Init(std::byte*& memory_buffer, const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
+	std::byte** Init(const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
 
 	void* Allocate(const unsigned size_in_bytes);
 
 	void Free();
 
 	void Clear();
+
+	void Reset();
 
 	void PrintData(const bool print_contents = false) const;
 

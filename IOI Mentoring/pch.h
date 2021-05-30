@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <cstddef>
+#include <cstdlib>
 
 #include <string>
 #include <array>
@@ -25,6 +26,7 @@
 #include <stack>
 #include <list>
 #include <algorithm>
+#include <queue>
 
 // Windows API
 #define WIN32_LEAN_AND_MEAN

@@ -1,78 +1,55 @@
+/***************************************************************************//**
+ * @filename PoolAllocator.h
+ * @brief	 Contains the stack allocator class.
+ * @author   Inaki Arostegui
+ ******************************************************************************/
+
 #pragma once
 #include "pch.h"
 #include "IAllocator.h"
 
-
 class PoolAllocator : public IAllocator
 {
 public:
-	void Init(std::byte*& memory_buffer, const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/)
-	{
-		if (m_buffer != nullptr)
-			Clear();
-
-		m_buffer = new std::byte[memory_buffer_length_in_bytes];
-		memory_buffer = m_buffer;
-
-		m_buffer_size = memory_buffer_length_in_bytes;
-	}
-
-	//should return nullptr if it can't/won't allocate
-	void* Allocate(const unsigned size_in_bytes)
-	{
-		if (m_offset + size_in_bytes > m_buffer_size)
-			return nullptr;
-
-		m_offset += size_in_bytes;
-		m_headers.push(size_in_bytes);
-
-		return &m_buffer[m_offset - size_in_bytes];
-	}
-
-	//should do nothing if passed nullptr, undefined behavior (e.g. crash) if passed a pointer that wasn't previously allocated by the same allocator
-	void Free(void* ptr)
-	{
-		if (!m_headers.empty())
-		{
-			m_offset -= m_headers.top();
-			m_headers.pop();
-		}
-	}
-
-	void Clear()
-	{
-		delete[] m_buffer;
-		m_buffer = nullptr;
-		m_offset = 0u;
-
-		m_headers.clear();
-	}
-
 	~PoolAllocator()
 	{
-		Clear();
+		Reset();
 	}
 
-	void PrintData()
-	{
-		if (m_buffer == nullptr)
-		{
-			std::cout << "Buffer Empty" << std::endl;
-			return;
-		}
-		std::cout << "m_buffer_size: " << m_buffer_size << std::endl;
-		std::cout << "m_offset: " << m_offset << std::endl;
+	std::byte** Init(const unsigned chunk_size_in_bytes, const unsigned chunks_amount/*std::span<std::byte>* memory_buffer*/);
 
-		//for (unsigned i = 0u; i < m_buffer_size; i++)
-		//	std::cout << std::to_integer<int>(m_buffer[i]) << " ";
-		//std::cout << std::endl
+	void* Allocate();
+
+	void Free(void* ptr);
+
+	bool IsChunkFree(void* ptr);
+
+	void Clear();
+
+	void Reset();
+
+	void PrintData(const bool print_contents) const;
+
+	unsigned GetBufferSize() const
+	{
+		return m_chunks_amount * m_chunk_size;
+	}
+
+	unsigned GetChunkSize() const
+	{
+		return m_chunk_size;
+	}
+
+	std::vector<unsigned> GetFreeChunks() const
+	{
+		return m_free_chunk_buffer_dists;
 	}
 
 private:
 	std::byte* m_buffer = nullptr;
-	unsigned m_offset = 0u;
-	mutable unsigned m_buffer_size = 0u;
-	std::list<int> m_headers;
+	unsigned m_chunks_amount = 0u;
+	unsigned m_chunk_size = 0u;
+	std::vector<unsigned> m_free_chunk_buffer_dists;
 };
 
 

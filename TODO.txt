@@ -42,8 +42,6 @@ does const correctness affect compiler output? (relates to the point above)
 transitive / non transitive behavior of const (e.g. what happens to a pointer in a const struct? what about the type pointed?)
 mutable, what it does? for what it can be used? shall it ever be used? mutable lambdas
 
---------------------------------
-
 MEMORY MANAGEMENT
 //assume byte is a typedef for unsigned char, or uint8_t, or std::byte
 derive from this class and implement an allocator:
@@ -65,7 +63,15 @@ on deletion, you can do nothing.
 additional exercise: how to make that allocator automatically reset (i.e. ready to be used again) if all pending allocations have been freed?
 once you feel a rockstar on memory allocation, go and watch this talk from Alexandrescu on the topic: https://www.youtube.com/watch?v=LIb3L4vKZ7U
 
-OBJECT CREATION/DESTRUCTION
+--------------------------------
+[FREE LIST ALLOCATOR]
+[STD::SWAP]
+[PLACEMENT NEW]
+[VECTOR CLASS UPGRADE]
+[POINTER ALIASING]
+[IMPLICIT CONVERSION]
+
+OBJECT CREATION/DESTRUCTION 	
 study placement new, and how to construct and destruct objects into pre-existing memory locations
 Once you're done with that you can now reimplement the Vector<T> from our first chat without using new and delete, but using your own allocator.
 based on what you know about move semantics, object construction, and perfect forwarding, you should be able to implement even the emplace_back(...) API from std::vector. give it a try.

@@ -7,18 +7,18 @@
 #include "pch.h"
 #include "LinearAllocator.h"
 
-void LinearAllocator::Init(std::byte*& memory_buffer, const unsigned memory_buffer_length_in_bytes)
+std::byte** LinearAllocator::Init(const unsigned memory_buffer_length_in_bytes)
 {
-	// If theres an existing buffer then clear it to recreate it
+	// If theres an existing buffer then reset it to recreate it
 	if (m_buffer != nullptr)
-		Clear();
+		Reset();
 
 	// Allocate requested memory
 	m_buffer = new std::byte[memory_buffer_length_in_bytes];
-	// Send buffer pointer to user
-	memory_buffer = m_buffer;
 
 	m_buffer_size = memory_buffer_length_in_bytes;
+
+	return &m_buffer;
 }
 
 void* LinearAllocator::Allocate(const unsigned size_in_bytes)
@@ -35,6 +35,12 @@ void* LinearAllocator::Allocate(const unsigned size_in_bytes)
 }
 
 void LinearAllocator::Clear()
+{
+	// Resets all data
+	m_offset = 0u;
+}
+
+void LinearAllocator::Reset()
 {
 	// Free the allocated memory and reset all other data
 	delete[] m_buffer;
