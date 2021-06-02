@@ -16,6 +16,7 @@ public:
 		Reset();
 	}
 
+	// Span is a read only container of contiguous memory
 	std::byte** Init(const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
 
 	void* Allocate(const unsigned size_in_bytes);

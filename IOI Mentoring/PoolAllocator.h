@@ -22,7 +22,9 @@ public:
 
 	void Free(void* ptr);
 
-	bool IsChunkFree(void* ptr);
+	bool IsChunkFree(void* ptr) const;
+
+	bool IsChunkPtrValid(void* ptr) const;
 
 	void Clear();
 

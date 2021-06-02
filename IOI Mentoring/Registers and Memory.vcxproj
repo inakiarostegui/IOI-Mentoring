@@ -147,8 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FreeListAllocator.cpp" />
     <ClCompile Include="LinearAllocator.cpp" />
-    <ClCompile Include="IAllocator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -159,8 +159,16 @@
     <ClCompile Include="PoolAllocator.cpp" />
     <ClCompile Include="StackAllocator.cpp" />
     <ClCompile Include="UnitTests.cpp" />
+    <ClCompile Include="UT_FreeListAllocator.cpp" />
+    <ClCompile Include="UT_LinearAllocator.cpp" />
+    <ClCompile Include="UT_MoveSemantics.cpp" />
+    <ClCompile Include="UT_PoolAllocator.cpp" />
+    <ClCompile Include="UT_StackAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllocatorTestClass.h" />
+    <ClInclude Include="FreeListAllocator.h" />
+    <ClInclude Include="FreeListMemoryChunk.h" />
     <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="DebugPrint.h" />
     <ClInclude Include="IAllocator.h" />

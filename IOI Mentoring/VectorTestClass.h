@@ -1,7 +1,6 @@
 /***************************************************************************//**
  * @filename VectorTestClass.h
- * @brief    Contains the VectorTestClass class definition that is used by
- *           the Vector class.
+ * @brief    Contains the VectorTestClass class used by the vector unit tests.
  * @author   Inaki Arostegui
  ******************************************************************************/
 

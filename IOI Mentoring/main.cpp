@@ -4,12 +4,15 @@
  * @author   Inaki Arostegui
  ******************************************************************************/
 
-#include "pch.h"
+#include "pch.h"	
 #include "UnitTests.h"
+
+using namespace UT;
 
 int main(void)
 {
-	run_unit_tests({ /*e_UnitTestTypes::e_move_semantics, */e_UnitTestTypes::e_allocators });
+	UT::RunUnitTests();
+	//UT::RunUnitTests({ e_UTTypes::e_alloc_freelist});
 
 	return 0; 
 }

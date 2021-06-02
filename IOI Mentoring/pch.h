@@ -20,6 +20,7 @@
 #include <cstring>
 #include <utility>
 #include <cassert>
+#include <map>
 #include <unordered_map>
 #include <type_traits>
 #include <span>
@@ -27,6 +28,7 @@
 #include <list>
 #include <algorithm>
 #include <queue>
+#include <time.h>
 
 // Windows API
 #define WIN32_LEAN_AND_MEAN

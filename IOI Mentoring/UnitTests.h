@@ -1,6 +1,7 @@
 /***************************************************************************//**
  * @filename UnitTests.h
- * @brief	 Contains the unit test functions, container and run test function.
+ * @brief	 Contains the unit test function definitions, container and run test 
+ *			 function definition.
  * @author   Inaki Arostegui
  ******************************************************************************/
 
@@ -8,79 +9,79 @@
 #include "pch.h"
 #include "UnitTest.h"
 
-enum class e_UnitTestTypes { e_move_semantics, e_allocators };
-
-#pragma region MOVE SEMANTICS & PERFECT FORWARDING UT
-bool unit_test_move_assignment();
-bool unit_test_move_semantics_0();
-bool unit_test_move_semantics_1();
-bool unit_test_push_lvalue_0();
-bool unit_test_push_lvalue_1();
-bool unit_test_push_rvalue_0();
-bool unit_test_push_rvalue_1();
-bool unit_test_push_rvalue_2();
-bool unit_test_emplace_lvalue_0();
-bool unit_test_emplace_lvalue_1();
-bool unit_test_emplace_rvalue_0();
-bool unit_test_emplace_rvalue_1();
-bool unit_test_emplace_rvalue_2();
-#pragma endregion
-
-#pragma region ALLOCATOR UT
-class AllocUTClass
+namespace UT
 {
-public:
-	double y = 0.5;
-	int x = 0;
+	enum class e_UTTypes { e_move_semantics, e_alloc_linear, e_alloc_stack, e_alloc_pool, e_alloc_freelist };
 
-	AllocUTClass() = default;
-
-	AllocUTClass(AllocUTClass&& other) noexcept : x(other.x), y(other.y) {	}
-	
-	AllocUTClass(const double other_y, const int other_x) : x(other_x), y(other_y) {	}
-
-	bool operator==(const AllocUTClass& other)
+	namespace MoveSemantics
 	{
-		return x == other.x && y == other.y;
+		bool move_assignment();
+		bool move_semantics_0();
+		bool move_semantics_1();				// R-value becomes L-value
+		bool push_lvalue_0();
+		bool push_lvalue_1();
+		bool push_rvalue_0();
+		bool push_rvalue_1();
+		bool push_rvalue_2();
+		bool emplace_lvalue_0();
+		bool emplace_lvalue_1();
+		bool emplace_rvalue_0();
+		bool emplace_rvalue_1();
+		bool emplace_rvalue_2();
 	}
 
-	bool operator!=(const AllocUTClass& other)
+	namespace Allocator
 	{
-		return x != other.x || y != other.y;
+		bool linear_init();
+		bool linear_allocate_0();				// Basic allocation
+		bool linear_allocate_1();				// Invalid ptr allocation
+		bool linear_free_0();					// Basic free
+		bool linear_reset();
+		bool linear_init_reset();
+		bool linear_prod();
+
+		bool stack_init();
+		bool stack_allocate_0();				// Basic allocation
+		bool stack_allocate_1();				// Invalid ptr allocation
+		bool stack_free_0();					// Basic free
+		bool stack_free_1();					// Empty free
+		bool stack_clear();
+		bool stack_reset();
+		bool stack_init_reset();
+		bool stack_prod();
+
+		bool pool_init();
+		bool pool_allocate_0();					// Basic allocation
+		bool pool_allocate_1();					// Invalid ptr allocation
+		bool pool_free_0();						// Basic free
+		bool pool_free_1();						// Invalid ptr free
+		bool pool_free_2();						// Invalid ptr free
+		bool pool_clear();
+		bool pool_reset();
+		bool pool_init_reset();
+		bool pool_prod();
+
+		bool freelist_init();
+		bool freelist_allocate_firstfit_0();	// Basic allocation
+		bool freelist_allocate_firstfit_1();	// Invalid ptr allocation
+		bool freelist_allocate_firstfit_2();	// First fit allocation
+		bool freelist_allocate_bestfit_0();		// Basic allocation
+		bool freelist_allocate_bestfit_1();		// Invalid ptr allocation
+		bool freelist_allocate_bestfit_2();		// Best fit allocation
+		bool freelist_free_0();					// Basic free (with list head and tail)
+		bool freelist_free_1();					// Invalid ptr free
+		bool freelist_free_2();					// Invalid ptr free
+		bool freelist_clear();
+		bool freelist_reset();
+		bool freelist_init_reset();
+		bool freelist_prod();					// Free chunk concatenation
 	}
 
-	friend std::ostream& operator<<(std::ostream& out, const AllocUTClass& data)
-	{
-		return out << data.y << ' ' << data.x;
-	}
-};
-
-bool unit_test_alloc_linear_init();
-bool unit_test_alloc_linear_allocate_0();
-bool unit_test_alloc_linear_allocate_1();
-bool unit_test_alloc_linear_free_0();
-bool unit_test_alloc_linear_reset();
-bool unit_test_alloc_linear_init_reset();
-bool unit_test_alloc_linear_prod();
-bool unit_test_alloc_stack_init();
-bool unit_test_alloc_stack_allocate_0();
-bool unit_test_alloc_stack_allocate_1();
-bool unit_test_alloc_stack_free_0();
-bool unit_test_alloc_stack_free_1();
-bool unit_test_alloc_stack_clear();
-bool unit_test_alloc_stack_reset();
-bool unit_test_alloc_stack_init_reset();
-bool unit_test_alloc_stack_prod();
-bool unit_test_alloc_pool_init();
-bool unit_test_alloc_pool_allocate_0();
-bool unit_test_alloc_pool_allocate_1();
-bool unit_test_alloc_pool_free_0();
-bool unit_test_alloc_pool_free_1();
-bool unit_test_alloc_pool_free_2();
-bool unit_test_alloc_pool_clear();
-bool unit_test_alloc_pool_reset();
-bool unit_test_alloc_pool_init_reset();
-bool unit_test_alloc_pool_prod();
-#pragma endregion
-
-void run_unit_tests(std::vector<e_UnitTestTypes>&& test_types_to_run);
+	void RunUnitTests(std::vector<UT::e_UTTypes>&& test_types_to_run = { 
+																		  e_UTTypes::e_move_semantics,
+																		  e_UTTypes::e_alloc_linear,
+																		  e_UTTypes::e_alloc_stack,
+																		  e_UTTypes::e_alloc_pool,
+																		  e_UTTypes::e_alloc_freelist,
+																	   });
+}

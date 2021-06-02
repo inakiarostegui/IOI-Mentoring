@@ -13,60 +13,96 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Allocators">
+      <UniqueIdentifier>{7ef2e7aa-69d0-48d2-9482-688b42f33c4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UnitTests">
+      <UniqueIdentifier>{ef7e42cd-2aeb-4583-b96d-3eb7d4206d84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Vector &amp; MoveSemantics">
+      <UniqueIdentifier>{8e7c25a3-c1a3-4869-bd90-b35581bf8234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{29664270-fa02-45e8-91df-0179f9e4ebb7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UnitTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IAllocator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="FreeListAllocator.cpp">
+      <Filter>Source Files\Allocators</Filter>
     </ClCompile>
     <ClCompile Include="LinearAllocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StackAllocator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Allocators</Filter>
     </ClCompile>
     <ClCompile Include="PoolAllocator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Allocators</Filter>
+    </ClCompile>
+    <ClCompile Include="StackAllocator.cpp">
+      <Filter>Source Files\Allocators</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="UT_FreeListAllocator.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="UT_LinearAllocator.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="UT_MoveSemantics.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="UT_PoolAllocator.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="UT_StackAllocator.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UnitTest.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorTestClass.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugPrint.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UnitTests.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="FreeListAllocator.h">
+      <Filter>Source Files\Allocators</Filter>
     </ClInclude>
     <ClInclude Include="IAllocator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Allocators</Filter>
     </ClInclude>
     <ClInclude Include="LinearAllocator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StackAllocator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Allocators</Filter>
     </ClInclude>
     <ClInclude Include="PoolAllocator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="StackAllocator.h">
+      <Filter>Source Files\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTest.h">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTests.h">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorTestClass.h">
+      <Filter>Source Files\Vector &amp; MoveSemantics</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Source Files\Vector &amp; MoveSemantics</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugPrint.h">
+      <Filter>Source Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Source Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="AllocatorTestClass.h">
+      <Filter>Source Files\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeListMemoryChunk.h">
+      <Filter>Source Files\Allocators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -34,7 +34,7 @@ void* PoolAllocator::Allocate()
 		return nullptr;
 
 	// Remove the chunk from the container with the free chunks
-	unsigned free_chunk_buffer_dists = m_free_chunk_buffer_dists.back();
+	const unsigned free_chunk_buffer_dists = m_free_chunk_buffer_dists.back();
 	m_free_chunk_buffer_dists.pop_back();
 
 	// Return a ptr to the allocated memory
@@ -54,28 +54,13 @@ void PoolAllocator::Free(void* ptr)
 	m_free_chunk_buffer_dists.push_back(static_cast<unsigned>(ptr_buffer_dist));
 }
 
-bool PoolAllocator::IsChunkFree(void* ptr)
+bool PoolAllocator::IsChunkFree(void* ptr) const
 {
-	if (ptr == nullptr)
+	if (!IsChunkPtrValid(ptr))
 		return true;
 
-	// Check if the ptr is pointing somewhere inside the buffer
-	if (ptr < m_buffer || ptr > m_buffer + GetBufferSize())
-	{
-		debug_print("ERROR [PoolAllocator.cpp, PoolAllocator, bool IsChunkFree(void*)]: Ptr to deallocate was not in buffer.");
-		return true;
-	}
-
-	// Calculate the distance from the given ptr to the buffer
-	ptrdiff_t ptr_buffer_dist = (std::byte*)ptr - m_buffer;
-	// Check if the ptr points to the start of a chunk
-	if (ptr_buffer_dist % m_chunk_size != 0)
-	{
-		debug_print("ERROR [PoolAllocator.cpp, PoolAllocator, bool IsChunkFree(void*)]: Ptr to deallocate was not aligned with chunks.");
-		return true;
-	}
-
-	// Check if the chunk is free
+	const ptrdiff_t ptr_buffer_dist = (std::byte*)ptr - m_buffer;
+	// Check if the chunk is free (inside the free chunk container)
 	std::vector<unsigned>::const_iterator it = std::find(m_free_chunk_buffer_dists.begin(), m_free_chunk_buffer_dists.end(), ptr_buffer_dist);
 	if (it == m_free_chunk_buffer_dists.end())
 		return false;
@@ -83,9 +68,32 @@ bool PoolAllocator::IsChunkFree(void* ptr)
 	return true;
 }
 
+bool PoolAllocator::IsChunkPtrValid(void* ptr) const
+{
+	if (ptr == nullptr)
+		return false;
+
+	// Check if the ptr is pointing somewhere inside the buffer
+	if (ptr < m_buffer || ptr > m_buffer + GetBufferSize())
+	{
+		debug_print("ERROR [PoolAllocator.cpp, PoolAllocator, bool IsChunkFree(void*)]: Ptr to deallocate was not in buffer.");
+		return false;
+	}
+
+	const ptrdiff_t ptr_buffer_dist = (std::byte*)ptr - m_buffer;
+	// Check if the ptr points to the start of a chunk
+	if (ptr_buffer_dist % m_chunk_size != 0)
+	{
+		debug_print("ERROR [PoolAllocator.cpp, PoolAllocator, bool IsChunkFree(void*)]: Ptr to deallocate was not aligned with chunks.");
+		return false;
+	}
+
+	return true;
+}
+
 void PoolAllocator::Clear()
 {
-	// Resets all data
+	// Resets all data and prepares for reuse without changing allocated memory
 	m_free_chunk_buffer_dists.resize(m_chunks_amount);
 
 	for (unsigned i = 0u; i < m_chunks_amount; i++)
