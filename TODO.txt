@@ -1,3 +1,15 @@
+[ALLOCATORS MISSING ALIGNMENT]
+[ALLOCATORS MISSING HEADERS]
+[ATOMIC]
+[STD::ALLOCATOR]
+[SCOPE_EXIT]
+[STD::SPAN]
+[VECTOR CLASS UPGRADE]
+[REFRESH PASS BY VAL/REF]
+[glvalue prvalue xvalue]
+[RESTRICT]
+--------------------------------
+
 POINTERS AND MEMORY LAYOUT
 layout of an object in memory
 HINT: there are two ways of drawing memory, with the 0 on the top or on the bottom.
@@ -69,26 +81,14 @@ Once you're done with that you can now reimplement the Vector<T> from our first 
 based on what you know about move semantics, object construction, and perfect forwarding, you should be able to implement even the emplace_back(...) API from std::vector. give it a try.
 This takes time, it's not a few hour exercise to properly do a std::vector replacement. take your time.
 
---------------------------------
-[ALLOCATORS MISSING ALIGNMENT]
-[ALLOCATORS MISSING HEADERS]
-[VOLATILE]
-[STD::ALLOCATOR]
-[SCOPE_EXIT]
-[FREE LIST ALLOCATOR]
-[STD::SPAN]
-[VECTOR CLASS UPGRADE]
-[POINTER ALIASING]
-[IMPLICIT CONVERSION]
-
+IMPLICIT CONVERSION
+when does the compiler do implicit conversion between?
+how does the promotion work?
+learn to use the "explicit" keyword on types
+learn how to write cast operators on objects
 
 POINTER ALIASING
 this is quite theoretical but with recent moves towards DOD is coming back into relevance
 restrict pointers (keep in mind this is not in C++ for some historical reason, yet supported unofficially by all compiler)
 I'm tossing it here as a filler in case you're completely idle or bored, but you can happily put it on the backburner, as you won't need it any time soon.
 
-IMPLICIT CONVERSION
-when does the compiler do implicit conversion between?
-how does the promotion work?
-learn to use the "explicit" keyword on types
-learn how to write cast operators on objects
