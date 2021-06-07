@@ -1,14 +1,15 @@
-[ALLOCATORS MISSING ALIGNMENT]
-[ALLOCATORS MISSING HEADERS]
+CODING:
+[FREELIST ALLOCATOR MISSING ALIGNMNET & HEADERS]
+[VECTOR ALLOCATOR]
+[STD::SPAN]
+
+RESEARCH:
 [ATOMIC]
 [STD::ALLOCATOR]
-[SCOPE_EXIT]
-[STD::SPAN]
-[VECTOR CLASS UPGRADE]
+[SCOPE_EXIT]			https://codereview.stackexchange.com/questions/179979/scope-exit-implementation
 [REFRESH PASS BY VAL/REF]
 [glvalue prvalue xvalue]
-[RESTRICT]
---------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
 
 POINTERS AND MEMORY LAYOUT
 layout of an object in memory
