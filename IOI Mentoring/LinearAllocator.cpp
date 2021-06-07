@@ -14,24 +14,32 @@ std::byte** LinearAllocator::Init(const unsigned memory_buffer_length_in_bytes)
 		Reset();
 
 	// Allocate requested memory
-	m_buffer = new std::byte[memory_buffer_length_in_bytes];
+	m_buffer = reinterpret_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
+	assert(m_buffer != nullptr);
 
 	m_buffer_size = memory_buffer_length_in_bytes;
 
 	return &m_buffer;
 }
 
-void* LinearAllocator::Allocate(const unsigned size_in_bytes)
+void* LinearAllocator::Allocate(const unsigned size_in_bytes, const unsigned alignment)
 {
+	if (size_in_bytes == 0u)
+		return nullptr;
+
+	unsigned padding_with_size = size_in_bytes;
+	if (alignment != 0u)
+		padding_with_size = CalculatePadding(reinterpret_cast<uintptr_t>(m_buffer) + m_offset + size_in_bytes, alignment) + size_in_bytes;
+
 	// If the requested size cannot be allocated then dont attempt
-	if (m_offset + size_in_bytes > m_buffer_size)
+	if (m_offset + padding_with_size > m_buffer_size)
 		return nullptr;
 
 	// Update the offset by "moving" it by the given size
-	m_offset += size_in_bytes;
+	m_offset += padding_with_size;
 
 	// Return pointer to allocated block
-	return &m_buffer[m_offset - size_in_bytes];
+	return &m_buffer[m_offset - padding_with_size];
 }
 
 void LinearAllocator::Clear()
@@ -43,7 +51,7 @@ void LinearAllocator::Clear()
 void LinearAllocator::Reset()
 {
 	// Free the allocated memory and reset all other data
-	delete[] m_buffer;
+	free(m_buffer);
 	m_buffer = nullptr;
 
 	m_offset = 0u;

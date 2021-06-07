@@ -25,19 +25,19 @@ namespace UT
         {
             StackAllocator sa;
             std::byte** buffer = sa.Init(48);
-            sa.Allocate(20);
+            sa.Allocate(20, 4u);
 
-            return sa.GetOffset() == 20 && sa.GetAmountOfBlocks() == 1u;
+            return sa.GetOffset() == 20 + sizeof(StackAllocator::StackAllocationFooter) + (20u % 4u);
         }
 
         bool stack_allocate_1()
         {
             StackAllocator sa;
             std::byte** buffer = sa.Init(48);
-            sa.Allocate(20);
+            sa.Allocate(20, 8u);
             sa.Allocate(30);
 
-            return sa.GetOffset() == 20 && sa.GetAmountOfBlocks() == 1u;
+            return sa.GetOffset() == 20 + sizeof(StackAllocator::StackAllocationFooter) + (20u % 4u);
         }
 
         bool stack_free_0()
@@ -48,7 +48,7 @@ namespace UT
             sa.Allocate(20);
             sa.Free();
 
-            return sa.GetOffset() == 20 && sa.GetAmountOfBlocks() == 1u;
+            return sa.GetOffset() == 20 + sizeof(StackAllocator::StackAllocationFooter);
         }
 
         bool stack_free_1()
@@ -66,7 +66,7 @@ namespace UT
             std::byte** buffer = sa.Init(48u);
             sa.Clear();
 
-            return sa.GetOffset() == 0u && sa.GetAmountOfBlocks() == 0u && sa.GetBufferSize() == 48u;
+            return sa.GetOffset() == 0u && sa.GetBufferSize() == 48u;
         }
 
         bool stack_reset()
@@ -85,7 +85,7 @@ namespace UT
             sa.Allocate(20);
             buffer = sa.Init(36);
 
-            return sa.GetBufferSize() == 36u && sa.GetOffset() == 0u && sa.GetAmountOfBlocks() == 0;
+            return sa.GetBufferSize() == 36u && sa.GetOffset() == 0u;
         }
 
         bool stack_prod()
@@ -94,15 +94,15 @@ namespace UT
 
             std::byte** buffer = sa.Init(sizeof(AllocatorTestClass) * 8);
 
-            AllocatorTestClass* data_0 = new (sa.Allocate(sizeof(AllocatorTestClass))) AllocatorTestClass(1.2, 8);
-            AllocatorTestClass* data_1 = new (sa.Allocate(sizeof(AllocatorTestClass))) AllocatorTestClass(1.5, 10);
+            AllocatorTestClass* data_0 = new (sa.Allocate(sizeof(AllocatorTestClass), 4u)) AllocatorTestClass(1.2, 8);
+            AllocatorTestClass* data_1 = new (sa.Allocate(sizeof(AllocatorTestClass), 4u)) AllocatorTestClass(1.5, 10);
 
             sa.Free();
 
-            AllocatorTestClass* data_2 = new (sa.Allocate(sizeof(AllocatorTestClass))) AllocatorTestClass(2.2, 5);
-            AllocatorTestClass* data_3 = new (sa.Allocate(sizeof(AllocatorTestClass))) AllocatorTestClass(2.6, 2);
+            AllocatorTestClass* data_2 = new (sa.Allocate(sizeof(AllocatorTestClass), 4u)) AllocatorTestClass(2.2, 5);
+            AllocatorTestClass* data_3 = new (sa.Allocate(sizeof(AllocatorTestClass), 4u)) AllocatorTestClass(2.6, 2);
 
-            return sa.GetAmountOfBlocks() == 3 && *data_0 == AllocatorTestClass(1.2, 8) && data_1 == data_2 && *data_2 == AllocatorTestClass(2.2, 5) && *data_3 == AllocatorTestClass(2.6, 2);
+            return *data_0 == AllocatorTestClass(1.2, 8) && data_1 == data_2 && *data_2 == AllocatorTestClass(2.2, 5) && *data_3 == AllocatorTestClass(2.6, 2);
         }
     }
 }

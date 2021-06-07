@@ -1,11 +1,11 @@
 /***************************************************************************//**
- * @filename PoolAllocator.cpp
+ * @filename VectorAllocator.cpp
  * @brief	 Contains the pool allocator class function implementations.
  * @author   Inaki Arostegui
  ******************************************************************************/
-
+/*
 #include "pch.h"
-#include "PoolAllocator.h"
+#include "VectorAllocator.h"
 
 std::byte** PoolAllocator::Init(const unsigned chunk_size_in_bytes, const unsigned chunks_amount)
 {
@@ -14,8 +14,7 @@ std::byte** PoolAllocator::Init(const unsigned chunk_size_in_bytes, const unsign
 		Reset();
 
 	// Allocate requested memory
-	m_buffer = reinterpret_cast<std::byte*>(malloc(chunk_size_in_bytes * static_cast<size_t>(chunks_amount)));
-	assert(m_buffer != nullptr);
+	m_buffer = new std::byte[chunk_size_in_bytes * chunks_amount];
 
 	m_chunk_size = chunk_size_in_bytes;
 	m_chunks_amount = chunks_amount;
@@ -104,7 +103,7 @@ void PoolAllocator::Clear()
 void PoolAllocator::Reset()
 {
 	// Free allocated memory and reset all data
-	free(m_buffer);
+	delete[] m_buffer;
 	m_buffer = nullptr;
 
 	m_chunks_amount = 0u;
@@ -136,3 +135,4 @@ void PoolAllocator::PrintData(const bool print_contents) const
 		std::cout << std::endl;
 	}
 }
+*/

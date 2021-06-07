@@ -19,7 +19,7 @@ public:
 	// Span is a read only container of contiguous memory
 	std::byte** Init(const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
 
-	void* Allocate(const unsigned size_in_bytes);
+	void* Allocate(const unsigned size_in_bytes, const unsigned alignment = 0u);
 
 	void Free();
 
@@ -40,7 +40,7 @@ public:
 	}
 
 private:
-	std::byte* m_buffer = nullptr;
+	std::byte* m_buffer = nullptr;		// Would be void* if it were typed
 	unsigned m_offset = 0u;
 	mutable unsigned m_buffer_size = 0u;
 }; 

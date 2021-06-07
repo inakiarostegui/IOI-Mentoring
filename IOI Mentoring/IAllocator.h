@@ -17,6 +17,11 @@ public:
 
 	virtual void Reset() = 0;
 
+	static unsigned CalculatePadding(const uintptr_t& alloc_address, const unsigned alignment)
+	{
+		return alloc_address % alignment;
+	}
+
 	// Prints information about the allocator, for debugging purposes
 	virtual void PrintData(const bool print_contents) const = 0;
 };

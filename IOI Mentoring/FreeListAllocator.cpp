@@ -14,7 +14,8 @@ std::byte** FreeListAllocator::Init(const unsigned memory_buffer_length_in_bytes
 		Reset();
 
 	// Allocate requested memory
-	m_buffer = new std::byte[memory_buffer_length_in_bytes];
+	m_buffer = reinterpret_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
+	assert(m_buffer != nullptr);
 
 	m_buffer_size = memory_buffer_length_in_bytes;
 
@@ -39,15 +40,6 @@ void FreeListAllocator::InsertSortFreeChunk(MemoryChunk&& free_chunk, MemoryChun
 												 {
 												 	return memory_chunk_0.m_dist_to_buffer < dist;
 												 });
-	// LINEAR SEARCH
-	/*for (MemoryChunkListIterator it = m_free_chunks.begin(); it != m_free_chunks.end(); it++)
-	{
-		if (it->m_dist_to_buffer > free_chunk.m_dist_to_buffer)
-		{
-			*free_chunk_it = m_free_chunks.insert(it, free_chunk);
-			return;
-		}
-	}*/
 
 	// Place the chunk in the correct order
 	if (it != m_free_chunks.end())

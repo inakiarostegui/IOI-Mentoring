@@ -63,6 +63,9 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="VectorAllocator.cpp">
+      <Filter>Source Files\Vector &amp; MoveSemantics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeListAllocator.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="FreeListMemoryChunk.h">
       <Filter>Source Files\Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorAllocator.h">
+      <Filter>Source Files\Vector &amp; MoveSemantics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,56 +14,55 @@ std::byte** StackAllocator::Init(const unsigned memory_buffer_length_in_bytes)
 		Reset();
 
 	// Allocate requested memory
-	m_buffer = new std::byte[memory_buffer_length_in_bytes];
+	m_buffer = reinterpret_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
+	assert(m_buffer != nullptr);
 
 	m_buffer_size = memory_buffer_length_in_bytes;
 
 	return &m_buffer;
 }
 
-void* StackAllocator::Allocate(const unsigned size_in_bytes)
+void* StackAllocator::Allocate(const unsigned size_in_bytes, const unsigned alignment)
 {
+	if (size_in_bytes == 0u)
+		return nullptr;
+
+	unsigned alloc_size = size_in_bytes + sizeof(StackAllocationFooter);
+	if (alignment != 0u)
+		alloc_size += CalculatePadding(reinterpret_cast<uintptr_t>(m_buffer) + m_offset + alloc_size, alignment);
+
 	// If the requested size cannot be allocated then dont attempt
-	if (m_offset + size_in_bytes > m_buffer_size)
+	if (m_offset + alloc_size > m_buffer_size)
 		return nullptr;
 
 	// Update the offset and headers stack for the new block of memory
-	m_offset += size_in_bytes;
-	m_headers.push(size_in_bytes);
+	m_offset += alloc_size;
+	
+	new (&m_buffer[m_offset - sizeof(StackAllocationFooter)]) StackAllocationFooter(std::move(alloc_size));
 
 	// Return pointer to allocated block
-	return &m_buffer[m_offset - size_in_bytes];
+	return &m_buffer[m_offset - alloc_size];
 }
 
 void StackAllocator::Free()
 {
-	// Decrease offset by the size of the last allocated block in order to "free" it, then remove it from header stack
-	if (!m_headers.empty())
-	{
-		m_offset -= m_headers.top();
-		m_headers.pop();
-	}
+	// Decrease offset by the size of the last allocated block (read the size from the footer) in order to "free" it
+	if (m_offset - sizeof(StackAllocationFooter) >= 0u)
+		m_offset -= reinterpret_cast<StackAllocationFooter*>(m_buffer + m_offset - sizeof(StackAllocationFooter))->m_alloc_size;	
 }
 
 void StackAllocator::Clear()
 {
-	// Resets all data
 	m_offset = 0u;
-	
-	while (!m_headers.empty())
-		m_headers.pop();
 }
 
 void StackAllocator::Reset()
 {
 	// Free the allocated memory and reset all other data
-	delete[] m_buffer;
+	free(m_buffer);
 	m_buffer = nullptr;
 
 	m_offset = 0u;
-
-	while (!m_headers.empty())
-		m_headers.pop();
 }
 
 void StackAllocator::PrintData(const bool print_contents) const
@@ -76,9 +75,6 @@ void StackAllocator::PrintData(const bool print_contents) const
 
 	std::cout << "m_buffer_size: " << m_buffer_size << std::endl;
 	std::cout << "m_offset: " << m_offset << std::endl;
-
-	if (!m_headers.empty())
-		std::cout << "m_headers.size(): " << m_headers.size() << std::endl;
 
 	if (print_contents)
 	{
