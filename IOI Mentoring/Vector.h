@@ -206,7 +206,7 @@ public:
         return m_container[index];
     }
 
-#if DEBUG
+    #if DEBUG
     void print_stats()
     {
         debug_print("Size: " + std::to_string(m_size) + "  |  Capacity: " + std::to_string(m_capacity));
@@ -218,7 +218,7 @@ public:
             std::cout << m_container[i] << " | ";
         std::cout << std::endl;
     }
-#endif
+    #endif
 
 private:
     T* m_container = nullptr;
