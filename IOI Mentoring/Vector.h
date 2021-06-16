@@ -112,7 +112,7 @@ public:
     {
         check_and_grow();
 
-        /*new (m_container + m_size)*/ m_container[m_size] = T(std::forward<Args>(args)...);
+        m_container[m_size] = T(std::forward<Args>(args)...);
         
         m_size++;
 
@@ -199,7 +199,7 @@ public:
     {
         if (static_cast<unsigned>(index) > m_size || index < 0)
         {
-            debug_print("ERROR [main.cpp, Vector, T& operator[](int&&)]: Index not in container.");
+            debug_print("ERROR [main.cpp, Vector, T& operator[](const int)]: Index not in container.");
             assert(0);  // Is this the way to do things? Need to check up on that...
         }
 
@@ -239,7 +239,6 @@ decltype(auto) emplace_back(T& vec, U&&... data)
 {
     return vec.emplace_back(std::forward<U>(data)...);
 }
-
 
 // Perfect Forwarding Example
 /*class X

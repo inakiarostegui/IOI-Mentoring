@@ -164,7 +164,6 @@
     <ClCompile Include="UT_MoveSemantics.cpp" />
     <ClCompile Include="UT_PoolAllocator.cpp" />
     <ClCompile Include="UT_StackAllocator.cpp" />
-    <ClCompile Include="VectorAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllocatorTestClass.h" />
@@ -179,7 +178,6 @@
     <ClInclude Include="UnitTest.h" />
     <ClInclude Include="UnitTests.h" />
     <ClInclude Include="Vector.h" />
-    <ClInclude Include="VectorAllocator.h" />
     <ClInclude Include="VectorTestClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
