@@ -9,8 +9,11 @@ RESEARCH:
 [ATOMIC]
 [STD::ALLOCATOR]
 [SCOPE_EXIT]			https://codereview.stackexchange.com/questions/179979/scope-exit-implementation
-[REFRESH PASS BY VAL/REF]
-[glvalue prvalue xvalue]
+[glvalue prvalue xvalue]	// HARDCORE
+[STD::TYPE_TRAITS]
+
+// IF MEMPCY FAILS, COPY MANUALLY
+// ALLOCATOR SHOULD JUST MANAGE THE DATA
 ---------------------------------------------------------------------------------------------------------------------------------
 
 POINTERS AND MEMORY LAYOUT

@@ -13,7 +13,7 @@ class StackAllocator : public IAllocator
 public:
 	struct StackAllocationFooter
 	{
-		StackAllocationFooter(unsigned&& alloc_size) : m_alloc_size(alloc_size)
+		StackAllocationFooter(const unsigned alloc_size) : m_alloc_size(alloc_size)
 		{	};
 
 		unsigned m_alloc_size;

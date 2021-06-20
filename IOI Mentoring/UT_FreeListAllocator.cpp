@@ -139,7 +139,7 @@ namespace UT
 			flaff.Allocate(4);
 
 			int* temp_ptr = new int;
-			flaff.Free(reinterpret_cast<void*>(temp_ptr));
+			flaff.Free(static_cast<void*>(temp_ptr));
 
 			return flaff.GetAllocatedChunks().size() == 1;
 		}
@@ -150,7 +150,7 @@ namespace UT
 			std::byte** buffer = flaff.Init(8);
 
 			void* chunk_0 = flaff.Allocate(4);
-			flaff.Free(reinterpret_cast<void*>(&chunk_0 + 2));
+			flaff.Free(static_cast<void*>(&chunk_0 + 2));
 
 			return flaff.GetAllocatedChunks().size() == 1;
 		}

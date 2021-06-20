@@ -11,6 +11,14 @@
 class PoolAllocator : public IAllocator
 {
 public:
+	struct PoolAllocationHeader
+	{
+		PoolAllocationHeader(std::byte* free_list_next = nullptr) : m_free_list_next(free_list_next)
+		{	};
+
+		std::byte* m_free_list_next = nullptr;
+	};
+
 	~PoolAllocator()
 	{
 		Reset();
@@ -42,16 +50,28 @@ public:
 		return m_chunk_size;
 	}
 
-	std::vector<unsigned> GetFreeChunks() const
+	// For debug & test purposes
+	unsigned GetFreeChunkAmount() const
 	{
-		return m_free_chunk_buffer_dists;
+		if (m_free_list_head == nullptr)
+			return 0u;
+
+		unsigned free_chunk_count = 0u;
+		std::byte* it = m_free_list_head;
+		while (it != nullptr)
+		{
+			it = reinterpret_cast<PoolAllocationHeader*>(it)->m_free_list_next;
+			free_chunk_count++;
+		}
+		return free_chunk_count;
 	}
 
 private:
 	std::byte* m_buffer = nullptr;
 	unsigned m_chunks_amount = 0u;
 	unsigned m_chunk_size = 0u;
-	std::vector<unsigned> m_free_chunk_buffer_dists;
+
+	std::byte* m_free_list_head = nullptr;		// we could make this an unsigned for distance from start of buffer
 };
 
 

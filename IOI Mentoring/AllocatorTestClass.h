@@ -16,7 +16,7 @@ public:
 
 	AllocatorTestClass() = default;
 
-	AllocatorTestClass(AllocatorTestClass&& other) noexcept : x(other.x), y(other.y)\
+	AllocatorTestClass(AllocatorTestClass&& other) noexcept : x(other.x), y(other.y)
 	{	}
 
 	AllocatorTestClass(const double other_y, const int other_x) : x(other_x), y(other_y)

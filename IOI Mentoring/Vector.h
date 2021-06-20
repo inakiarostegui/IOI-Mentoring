@@ -131,7 +131,7 @@ public:
         if (!empty())
             m_size--;
         else
-            std::cout << "WARNING [main.cpp, Vector, T pop_back()]: Vector was empty." << std::endl;
+            std::cout << "WARNING [Vector.h, Vector, T pop_back()]: Vector was empty." << std::endl;
     }
 
     void clear()
@@ -165,7 +165,7 @@ public:
             }
         }
         else
-            debug_print("WARNING [main.cpp, Vector, void reserve()]: New capacity was not larger than previous capacity.");
+            debug_print("WARNING [Vector.h, Vector, void reserve()]: New capacity was not larger than previous capacity.");
 
         /*If n is greater than the current vector capacity, the function causes the container to reallocate its storage increasing its capacity to n (or greater).
         In all other cases, the function call does not cause a reallocation and the vector capacity is not affected.

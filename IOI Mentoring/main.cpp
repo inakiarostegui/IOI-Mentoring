@@ -11,8 +11,8 @@ using namespace UT;
 
 int main(void)
 {
-	UT::RunUnitTests();
-	//UT::RunUnitTests({ e_UTTypes::e_alloc_freelist});
+	//UT::RunUnitTests();
+	UT::RunUnitTests({ e_UTTypes::e_alloc_freelist});
 
 	return 0; 
 }

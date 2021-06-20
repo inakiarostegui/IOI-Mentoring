@@ -14,7 +14,7 @@ std::byte** StackAllocator::Init(const unsigned memory_buffer_length_in_bytes)
 		Reset();
 
 	// Allocate requested memory
-	m_buffer = reinterpret_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
+	m_buffer = static_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
 	assert(m_buffer != nullptr);
 
 	m_buffer_size = memory_buffer_length_in_bytes;
@@ -38,7 +38,8 @@ void* StackAllocator::Allocate(const unsigned size_in_bytes, const unsigned alig
 	// Update the offset and headers stack for the new block of memory
 	m_offset += alloc_size;
 	
-	new (&m_buffer[m_offset - sizeof(StackAllocationFooter)]) StackAllocationFooter(std::move(alloc_size));
+	// I could get rid of a copy here by moving alloc_size, but it the code would look horrible when returning, not sure what is better...
+	new (&m_buffer[m_offset - sizeof(StackAllocationFooter)]) StackAllocationFooter(alloc_size);
 
 	// Return pointer to allocated block
 	return &m_buffer[m_offset - alloc_size];

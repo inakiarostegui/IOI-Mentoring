@@ -14,7 +14,7 @@ std::byte** LinearAllocator::Init(const unsigned memory_buffer_length_in_bytes)
 		Reset();
 
 	// Allocate requested memory
-	m_buffer = reinterpret_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
+	m_buffer = static_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
 	assert(m_buffer != nullptr);
 
 	m_buffer_size = memory_buffer_length_in_bytes;
