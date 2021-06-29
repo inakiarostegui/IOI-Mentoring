@@ -101,8 +101,5 @@
     <ClInclude Include="AllocatorTestClass.h">
       <Filter>Source Files\Allocators</Filter>
     </ClInclude>
-    <ClInclude Include="FreeListMemoryChunk.h">
-      <Filter>Source Files\Allocators</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

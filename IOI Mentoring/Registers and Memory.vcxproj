@@ -168,7 +168,6 @@
   <ItemGroup>
     <ClInclude Include="AllocatorTestClass.h" />
     <ClInclude Include="FreeListAllocator.h" />
-    <ClInclude Include="FreeListMemoryChunk.h" />
     <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="DebugPrint.h" />
     <ClInclude Include="IAllocator.h" />

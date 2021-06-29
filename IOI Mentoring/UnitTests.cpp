@@ -98,6 +98,7 @@ std::unordered_map<e_UTTypes, std::vector<UnitTest>> unit_tests =
             UnitTest{"ALLOCATE FIRST FIT 0",    &freelist_allocate_firstfit_0   },
             UnitTest{"ALLOCATE FIRST FIT 1",    &freelist_allocate_firstfit_1   },
             UnitTest{"ALLOCATE FIRST FIT 2",    &freelist_allocate_firstfit_2   },
+            UnitTest{"ALLOCATE FIRST FIT 3",    &freelist_allocate_firstfit_3   },
             UnitTest{"ALLOCATE BEST FIT 0",     &freelist_allocate_bestfit_0    },
             UnitTest{"ALLOCATE BEST FIT 1",     &freelist_allocate_bestfit_1    },
             UnitTest{"ALLOCATE BEST FIT 2",     &freelist_allocate_bestfit_2    },

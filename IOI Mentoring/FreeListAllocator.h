@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @filename PoolAllocator.h
+ * @filename FreeListAllocator.h
  * @brief	 Contains the free list allocator class header.
  * @author   Inaki Arostegui
  ******************************************************************************/
@@ -7,13 +7,37 @@
 #pragma once
 #include "pch.h"
 #include "IAllocator.h"
-#include "FreeListMemoryChunk.h"
 
 class FreeListAllocator : public IAllocator
 {
 public:
-	typedef std::list<MemoryChunk>::const_iterator MemoryChunkListIterator;
-	typedef std::vector<MemoryChunk>::const_iterator MemoryChunkVectorIterator;
+	struct FreeListFreeHeader
+	{
+		FreeListFreeHeader(const unsigned& chunk_size = 0u, FreeListFreeHeader* free_list_next = nullptr) : m_free_list_next(free_list_next), m_chunk_size(chunk_size)
+		{	}
+
+		FreeListFreeHeader(const FreeListFreeHeader& flfh)
+		{
+			m_free_list_next = flfh.m_free_list_next;
+			m_chunk_size = flfh.m_chunk_size;
+		}
+
+		bool operator==(const FreeListFreeHeader& other)
+		{
+			return m_free_list_next == other.m_free_list_next && other.m_chunk_size == other.m_chunk_size;
+		}
+
+		FreeListFreeHeader* m_free_list_next = nullptr;
+		unsigned m_chunk_size = 0u;
+	};
+
+	struct FreeListAllocHeader
+	{
+		FreeListAllocHeader(const unsigned& chunk_size = 0u) : m_chunk_size(chunk_size)
+		{	};
+
+		unsigned m_chunk_size = 0u;
+	};
 
 	enum class e_AllocType { e_firstfit, e_bestfit };
 
@@ -27,9 +51,9 @@ public:
 		Reset();
 	}
 
-	std::byte** Init(const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
+	std::byte** Init(const unsigned& memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
 
-	void* Allocate(const unsigned size_in_bytes);
+	void* Allocate(const unsigned& size_in_bytes);
 
 	void Free(void* ptr);
 
@@ -37,7 +61,7 @@ public:
 
 	void Reset();
 
-	bool IsChunkPtrValid(void* ptr, MemoryChunkVectorIterator* alloc_chunk_it);
+	bool IsChunkPtrValid(void* ptr, FreeListFreeHeader** prev_free_chunk = nullptr);
 
 	void PrintData(const bool print_contents = false) const;
 
@@ -46,14 +70,17 @@ public:
 		return m_buffer_size;
 	}
 
-	std::list<MemoryChunk> GetFreeChunks() const
+	std::list<FreeListFreeHeader*> GetFreeChunks() const
 	{
-		return m_free_chunks;
-	}
+		std::list<FreeListFreeHeader*> result;
+		FreeListFreeHeader* it = m_free_list_head;
+		while (it != nullptr)
+		{
+			result.push_back(it);
+			it = it->m_free_list_next;
+		}
 
-	std::vector<MemoryChunk> GetAllocatedChunks() const
-	{
-		return m_alloc_chunks;
+		return result;
 	}
 
 	e_AllocType GetAllocType() const
@@ -67,29 +94,20 @@ public:
 	}
 
 private:
-	bool AreChunksAdjancent(const MemoryChunk& chunk_0, const MemoryChunk& chunk_1) const;
+	bool AreChunksAdjacent(FreeListFreeHeader* chunk_0, FreeListFreeHeader* chunk_1) const;
 
-	void InsertSortFreeChunk(MemoryChunk&& free_chunk, MemoryChunkListIterator* free_chunk_it);
+	void* AllocateFirstFit(const unsigned& size_in_bytes);
+	void* AllocateBestFit(const unsigned& size_in_bytes);
 
-	MemoryChunk* InsertFreeChunk(MemoryChunk&& free_chunk);
-
-	void ConcatenateChunks(MemoryChunk* modificable_chunk, MemoryChunkListIterator&& other_chunk);
-
-	void FreeAllocatedChunk(MemoryChunkVectorIterator&& alloc_chunk_it, MemoryChunk* new_free_chunk);
-
-	void* AllocateFirstFit(const unsigned size_in_bytes);
-	void* AllocateBestFit(const unsigned size_in_bytes);
-
-	void* AllocateAtChunk(const unsigned size_in_bytes, MemoryChunkListIterator&& free_chunk);
+	void* AllocateAtChunk(unsigned size_in_bytes, FreeListFreeHeader* prev_free_chunk);
 
 
-	typedef void* (FreeListAllocator::*AllocateFn)(const unsigned);
+	typedef void* (FreeListAllocator::*AllocateFn)(const unsigned&);
 	AllocateFn m_alloc_fns[2] { &FreeListAllocator::AllocateFirstFit, &FreeListAllocator::AllocateBestFit };
 
 	e_AllocType m_alloc_type = e_AllocType::e_firstfit;
 
-	std::list<MemoryChunk> m_free_chunks;
-	std::vector<MemoryChunk> m_alloc_chunks;
+	FreeListFreeHeader* m_free_list_head = nullptr;
 
 	std::byte* m_buffer = nullptr;
 	unsigned m_buffer_size = 0u;

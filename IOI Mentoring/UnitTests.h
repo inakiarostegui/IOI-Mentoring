@@ -62,11 +62,12 @@ namespace UT
 		bool pool_prod();
 
 		bool freelist_init();
-		bool freelist_allocate_firstfit_0();	// Basic allocation
-		bool freelist_allocate_firstfit_1();	// Invalid ptr allocation
-		bool freelist_allocate_firstfit_2();	// First fit allocation
+		bool freelist_allocate_firstfit_0();	// Basic allocation 
+		bool freelist_allocate_firstfit_1();	// Buffer filling allocation
+		bool freelist_allocate_firstfit_2();	// Header fitting allocation 
+		bool freelist_allocate_firstfit_3();	// First fit allocation
 		bool freelist_allocate_bestfit_0();		// Basic allocation
-		bool freelist_allocate_bestfit_1();		// Invalid ptr allocation
+		bool freelist_allocate_bestfit_1();		// Header fitting allocation
 		bool freelist_allocate_bestfit_2();		// Best fit allocation
 		bool freelist_free_0();					// Basic free (with list head and tail)
 		bool freelist_free_1();					// Invalid ptr free
