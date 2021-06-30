@@ -16,15 +16,18 @@ namespace UT
         bool pool_init()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
 
-            return pa.GetBufferSize() == 8u * 12u;
+            return pa.GetBufferSize() == 96 && pa.GetChunkSize() == 8;
         }
 
         bool pool_allocate_0()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
+
             void* chunk_0 = pa.Allocate();
             void* chunk_1 = pa.Allocate();
 
@@ -34,7 +37,8 @@ namespace UT
         bool pool_allocate_1()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
 
             for (unsigned i = 0u; i < 12; i++)
                 pa.Allocate();
@@ -47,7 +51,9 @@ namespace UT
         bool pool_free_0()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
+
             void* chunk_0 = pa.Allocate();
             void* chunk_1 = pa.Allocate();
             pa.Free(chunk_0);
@@ -58,7 +64,9 @@ namespace UT
         bool pool_free_1()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
+
             void* chunk_0 = pa.Allocate();
             int* temp_ptr = new int;
             pa.Free(static_cast<void*>(temp_ptr));
@@ -69,7 +77,9 @@ namespace UT
         bool pool_free_2()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
+
             void* chunk_0 = pa.Allocate();
 
             pa.Free(static_cast<void*>(&chunk_0 + 2));
@@ -80,37 +90,20 @@ namespace UT
         bool pool_clear()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
+            std::byte buffer[96];
+            pa.Init(buffer, 8);
+
             void* chunk_0 = pa.Allocate();
             pa.Clear();
 
             return pa.GetFreeChunkAmount() == 12;
         }
 
-        bool pool_reset()
-        {
-             PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
-            void* chunk_0 = pa.Allocate();
-            pa.Reset();
-
-            return *buffer == nullptr;
-        }
-
-        bool pool_init_reset()
-        {
-            PoolAllocator pa;
-            std::byte** buffer = pa.Init(8, 12);
-            pa.Allocate();
-            buffer = pa.Init(8, 12);
-
-            return pa.GetBufferSize() == 8 * 12 && pa.GetChunkSize() == 8u && pa.GetFreeChunkAmount() == 12;
-        }
-
         bool pool_prod()
         {
             PoolAllocator pa;
-            std::byte** buffer = pa.Init(sizeof(AllocatorTestClass), 3);
+            std::byte buffer[sizeof(AllocatorTestClass) * 3];
+            pa.Init(buffer, sizeof(AllocatorTestClass));
 
             AllocatorTestClass* data_0 = new (pa.Allocate()) AllocatorTestClass(1.2, 8);
             AllocatorTestClass* data_1 = new (pa.Allocate()) AllocatorTestClass(1.5, 10);

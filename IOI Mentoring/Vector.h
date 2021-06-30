@@ -6,7 +6,7 @@
 
 #pragma once
 #include "pch.h"
-#include "VectorAllocator.h"
+#include "PoolAllocator.h"
 
 #define GROWTH_MULTIPLIER 2u
 
@@ -222,7 +222,7 @@ public:
 
 private:
     T* m_container = nullptr;
-    //VectorAllocator m_allocator;
+    //PoolAllocator m_allocator;
 
     unsigned m_size = 0u;
     unsigned m_capacity = 0u;

@@ -36,8 +36,6 @@ namespace UT
 		bool linear_allocate_0();				// Basic allocation
 		bool linear_allocate_1();				// Invalid ptr allocation
 		bool linear_free_0();					// Basic free
-		bool linear_reset();
-		bool linear_init_reset();
 		bool linear_prod();
 
 		bool stack_init();
@@ -46,8 +44,6 @@ namespace UT
 		bool stack_free_0();					// Basic free
 		bool stack_free_1();					// Empty free
 		bool stack_clear();
-		bool stack_reset();
-		bool stack_init_reset();
 		bool stack_prod();
 
 		bool pool_init();
@@ -57,8 +53,6 @@ namespace UT
 		bool pool_free_1();						// Invalid ptr free
 		bool pool_free_2();						// Invalid ptr free
 		bool pool_clear();
-		bool pool_reset();
-		bool pool_init_reset();
 		bool pool_prod();
 
 		bool freelist_init();
@@ -73,8 +67,6 @@ namespace UT
 		bool freelist_free_1();					// Invalid ptr free
 		bool freelist_free_2();					// Invalid ptr free
 		bool freelist_clear();
-		bool freelist_reset();
-		bool freelist_init_reset();
 		bool freelist_prod();					// Free chunk concatenation
 	}
 

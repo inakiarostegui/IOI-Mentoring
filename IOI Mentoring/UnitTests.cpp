@@ -51,8 +51,6 @@ std::unordered_map<e_UTTypes, std::vector<UnitTest>> unit_tests =
             UnitTest{"ALLOCATE 0",   &linear_allocate_0  },
             UnitTest{"ALLOCATE 1",   &linear_allocate_1  },
             UnitTest{"FREE 0",       &linear_free_0      },
-            UnitTest{"RESET",        &linear_reset       },
-            UnitTest{"INIT CLEAR",   &linear_init_reset  },
             UnitTest{"PRODUCTION",   &linear_prod        },
         }
     ),
@@ -67,8 +65,6 @@ std::unordered_map<e_UTTypes, std::vector<UnitTest>> unit_tests =
             UnitTest{"FREE 0",        &stack_free_0       },
             UnitTest{"FREE 1",        &stack_free_1       },
             UnitTest{"CLEAR",         &stack_clear        },
-            UnitTest{"RESET",         &stack_reset        },
-            UnitTest{"INIT CLEAR",    &stack_init_reset   },
             UnitTest{"PRODUCTION",    &stack_prod         },
         }
     ),
@@ -84,8 +80,6 @@ std::unordered_map<e_UTTypes, std::vector<UnitTest>> unit_tests =
             UnitTest{"FREE 1",         &pool_free_1         },
             UnitTest{"FREE 1",         &pool_free_2         },
             UnitTest{"CLEAR",          &pool_clear          },
-            UnitTest{"RESET",          &pool_reset          },
-            UnitTest{"INIT CLEAR",     &pool_init_reset     },
             UnitTest{"PRODUCTION",     &pool_prod           },
         }
     ),
@@ -106,8 +100,6 @@ std::unordered_map<e_UTTypes, std::vector<UnitTest>> unit_tests =
             UnitTest{"FREE 1",                  &freelist_free_1				},
             UnitTest{"FREE 2",                  &freelist_free_2			    },
             UnitTest{"CLEAR",                   &freelist_clear                 },
-            UnitTest{"RESET",                   &freelist_reset                 },
-            UnitTest{"INIT RESET",              &freelist_init_reset            },
             UnitTest{"PRODUCTION",              &freelist_prod                  },
         }
     ),

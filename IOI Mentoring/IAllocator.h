@@ -15,13 +15,8 @@ public:
 
 	virtual void Clear() = 0;
 
-	virtual void Reset() = 0;
-
-	static unsigned CalculatePadding(const uintptr_t& alloc_address, const unsigned alignment)
+	static uintptr_t CalculatePadding(const uintptr_t& alloc_address, const size_t& alignment)
 	{
 		return alloc_address % alignment;
 	}
-
-	// Prints information about the allocator, for debugging purposes
-	virtual void PrintData(const bool print_contents) const = 0;
 };

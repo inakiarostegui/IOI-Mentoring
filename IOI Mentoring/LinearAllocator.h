@@ -11,36 +11,25 @@
 class LinearAllocator : public IAllocator
 {
 public:
-	~LinearAllocator()
-	{
-		Reset();
-	}
+	void Init(std::span<std::byte>&& memory_buffer);
 
-	// Span is a read only container of contiguous memory
-	std::byte** Init(const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
-
-	void* Allocate(const unsigned size_in_bytes, const unsigned alignment = 0u);
+	void* Allocate(size_t size_in_bytes, const size_t& alignment = 0u);
 
 	void Free();
 
 	void Clear();
 
-	void Reset();
-
-	void PrintData(const bool print_contents = false) const;
-
-	unsigned GetOffset() const
+	size_t GetOffset() const
 	{
 		return m_offset;
 	}
 
-	unsigned GetBufferSize() const
+	size_t GetBufferSize() const
 	{
-		return m_buffer_size;
+		return m_buffer.size();
 	}
 
 private:
-	std::byte* m_buffer = nullptr;		// Would be void* if it were typed
-	unsigned m_offset = 0u;
-	mutable unsigned m_buffer_size = 0u;
+	std::span<std::byte> m_buffer{};		// Would be void* if it were typed
+	size_t m_offset = 0;
 }; 

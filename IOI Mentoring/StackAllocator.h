@@ -13,43 +13,33 @@ class StackAllocator : public IAllocator
 public:
 	struct StackAllocationFooter
 	{
-		StackAllocationFooter(const unsigned alloc_size) : m_alloc_size(alloc_size)
+		StackAllocationFooter(const size_t& alloc_size) : m_alloc_size(alloc_size)
 		{	};
 
-		unsigned m_alloc_size;
+		size_t m_alloc_size;
 	};
 
-	~StackAllocator()
-	{
-		Reset();
-	}
+	void Init(std::span<std::byte>&& memory_buffer);
 
-	std::byte** Init(const unsigned memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
-
-	void* Allocate(const unsigned size_in_bytes, const unsigned alignment = 0u);
+	void* Allocate(size_t size_in_bytes, const size_t& alignment = 0u);
 
 	void Free();
 
 	void Clear();
 
-	void Reset();
-
-	void PrintData(const bool print_contents = false) const;
-
-	unsigned GetOffset() const
+	size_t GetOffset() const
 	{
 		return m_offset;
 	}
 
-	unsigned GetBufferSize() const
+	size_t GetBufferSize() const
 	{
-		return m_buffer_size;
+		return m_buffer.size();
 	}
 
 private:
-	std::byte* m_buffer = nullptr;
-	unsigned m_offset = 0u;
-	mutable unsigned m_buffer_size = 0u;
+	std::span<std::byte> m_buffer{};
+	size_t m_offset = 0;
 };
 
 

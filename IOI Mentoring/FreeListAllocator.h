@@ -45,29 +45,19 @@ public:
 
 	FreeListAllocator(e_AllocType&& alloc_type) : m_alloc_type(alloc_type)
 	{	}
+	void Init(std::span<std::byte>&& memory_buffer);
 
-	~FreeListAllocator()
-	{
-		Reset();
-	}
-
-	std::byte** Init(const unsigned& memory_buffer_length_in_bytes/*std::span<std::byte>* memory_buffer*/);
-
-	void* Allocate(const unsigned& size_in_bytes);
+	void* Allocate(unsigned size_in_bytes);
 
 	void Free(void* ptr);
 
 	void Clear();
 
-	void Reset();
-
 	bool IsChunkPtrValid(void* ptr, FreeListFreeHeader** prev_free_chunk = nullptr);
 
-	void PrintData(const bool print_contents = false) const;
-
-	unsigned GetBufferSize() const
+	size_t GetBufferSize() const
 	{
-		return m_buffer_size;
+		return m_buffer.size();
 	}
 
 	std::list<FreeListFreeHeader*> GetFreeChunks() const
@@ -109,8 +99,7 @@ private:
 
 	FreeListFreeHeader* m_free_list_head = nullptr;
 
-	std::byte* m_buffer = nullptr;
-	unsigned m_buffer_size = 0u;
+	std::span<std::byte> m_buffer{};
 };
 
 // We cant do inheritance because, what if the user wants to change the alloc type at runtime?

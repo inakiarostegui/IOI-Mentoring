@@ -10,29 +10,18 @@
 constexpr unsigned SIZE_ALLOC_HEADER = sizeof(FreeListAllocator::FreeListAllocHeader);
 constexpr unsigned SIZE_FREE_HEADER = sizeof(FreeListAllocator::FreeListFreeHeader);
 
-std::byte** FreeListAllocator::Init(const unsigned& memory_buffer_length_in_bytes)
+void FreeListAllocator::Init(std::span<std::byte>&& memory_buffer)
 {
-	// If theres an existing buffer then reset it to recreate it
-	if (m_buffer != nullptr)
-		Reset();
-
-	// Allocate requested memory
-	m_buffer = static_cast<std::byte*>(malloc(memory_buffer_length_in_bytes));
-	assert(m_buffer != nullptr);
-
-	m_buffer_size = memory_buffer_length_in_bytes;
-
 	// Safety check, buffer size cant be less than freeheader size
-	if (memory_buffer_length_in_bytes < SIZE_FREE_HEADER)
+	if (memory_buffer.size() < SIZE_FREE_HEADER)
 	{
-		debug_print("ERROR [FreeListAllocator.cpp, FreeListAllocator, std::byte** Init(const unsigned)]: Buffer size cannot be less than FreeHeader size.");
+		debug_print("ERROR [FreeListAllocator.cpp, FreeListAllocator, std::byte** Init(const unsigned)]: Buffer size cannot be less than FreeHeader size (16 bytes).");
 		assert(0);
 	}
 
-	// Initialize free chunks, only chunk we have is the entire buffer
-	m_free_list_head = new (&m_buffer[0]) FreeListFreeHeader(memory_buffer_length_in_bytes - SIZE_ALLOC_HEADER);
+	m_buffer = std::forward<std::span<std::byte>>(memory_buffer);
 
-	return &m_buffer;
+	Clear();
 }
 
 // Allocates data of the given size inside the given chunk, size_in_bytes does not include headersize
@@ -85,7 +74,7 @@ void* FreeListAllocator::AllocateAtChunk(unsigned size_in_bytes, FreeListFreeHea
 	}
 }
 
-void* FreeListAllocator::Allocate(const unsigned& size_in_bytes)
+void* FreeListAllocator::Allocate(unsigned size_in_bytes)
 {
 	if (m_free_list_head == nullptr || size_in_bytes == 0u)
 		return nullptr;
@@ -94,7 +83,7 @@ void* FreeListAllocator::Allocate(const unsigned& size_in_bytes)
 	if (size_in_bytes + SIZE_ALLOC_HEADER < SIZE_FREE_HEADER)
 	{
 		debug_print("WARNING [FreeListAllocator.cpp, FreeListAllocator, void* Allocate(const unsigned&)]: Allocation size cannot be less than 12 bytes (SIZE_FREE_HEADER - SIZE_ALLOC_HEADER).");
-		return (this->*m_alloc_fns[static_cast<int>(m_alloc_type)])(SIZE_FREE_HEADER);
+		size_in_bytes = SIZE_FREE_HEADER;
 	}
 
 	// Call the allocation function depending on what allocation type we have set
@@ -223,9 +212,9 @@ bool FreeListAllocator::IsChunkPtrValid(void* ptr, FreeListFreeHeader** prev_fre
 		return false;
 
 	// Check if the ptr is pointing somewhere inside the buffer
-	if (ptr < m_buffer || ptr > m_buffer + m_buffer_size)
+	if (ptr < m_buffer.data() || ptr > m_buffer.data() + m_buffer.size())
 	{
-		debug_print("WARNING [FreeListAllocator.cpp, FreeListAllocator, bool IsChunkPtrValid(void*, FreeListFreeHeader**)]: Ptr to deallocate was not in buffer.");
+		debug_print("ERROR [FreeListAllocator.cpp, FreeListAllocator, bool IsChunkPtrValid(void*, FreeListFreeHeader**)]: Ptr to deallocate was not in buffer.");
 		return false;
 	}
 
@@ -277,36 +266,6 @@ bool FreeListAllocator::IsChunkPtrValid(void* ptr, FreeListFreeHeader** prev_fre
 
 void FreeListAllocator::Clear()
 {
-	// Resets all data and prepares for reuse without changing allocated memory
-	m_free_list_head = new (&m_buffer[0]) FreeListFreeHeader();
-}
-
-void FreeListAllocator::Reset()
-{
-	// Free allocated memory and reset all data
-	delete[] m_buffer;
-	m_buffer = nullptr;
-	m_free_list_head = nullptr;
-
-	m_buffer_size = 0u;
-}
-
-void FreeListAllocator::PrintData(const bool print_contents) const
-{
-	if (m_buffer == nullptr)
-	{
-		std::cout << "Buffer Empty" << std::endl;
-		return;
-	}
-
-	std::cout << "m_buffer_size: " << m_buffer_size << std::endl;
-
-	if (print_contents)
-	{
-		for (unsigned i = 0u; i < GetBufferSize(); i++)
-			std::cout << std::to_integer<int>(m_buffer[i]) << " ";
-		std::cout << std::endl;
-	}
-
-	std::cout << "--------------------------------" << std::endl;
+	// Initialize free chunks, only chunk we have is the entire buffer
+	m_free_list_head = new (&m_buffer[0]) FreeListFreeHeader(m_buffer.size() - SIZE_ALLOC_HEADER);
 }

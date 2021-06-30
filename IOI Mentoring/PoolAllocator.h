@@ -19,12 +19,7 @@ public:
 		std::byte* m_free_list_next = nullptr;
 	};
 
-	~PoolAllocator()
-	{
-		Reset();
-	}
-
-	std::byte** Init(const unsigned chunk_size_in_bytes, const unsigned chunks_amount/*std::span<std::byte>* memory_buffer*/);
+	void Init(std::span<std::byte>&& memory_buffer, const unsigned& chunk_size_in_bytes);
 
 	void* Allocate();
 
@@ -36,16 +31,12 @@ public:
 
 	void Clear();
 
-	void Reset();
-
-	void PrintData(const bool print_contents) const;
-
-	unsigned GetBufferSize() const
+	size_t GetBufferSize() const
 	{
-		return m_chunks_amount * m_chunk_size;
+		return m_buffer.size();
 	}
 
-	unsigned GetChunkSize() const
+	size_t GetChunkSize() const
 	{
 		return m_chunk_size;
 	}
@@ -67,8 +58,7 @@ public:
 	}
 
 private:
-	std::byte* m_buffer = nullptr;
-	unsigned m_chunks_amount = 0u;
+	std::span<std::byte> m_buffer{};
 	unsigned m_chunk_size = 0u;
 
 	std::byte* m_free_list_head = nullptr;		// we could make this an unsigned for distance from start of buffer
