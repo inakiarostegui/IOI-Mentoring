@@ -63,6 +63,9 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="UT_Vector.cpp">
+      <Filter>Source Files\UnitTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeListAllocator.h">

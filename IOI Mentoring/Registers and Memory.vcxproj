@@ -164,6 +164,7 @@
     <ClCompile Include="UT_MoveSemantics.cpp" />
     <ClCompile Include="UT_PoolAllocator.cpp" />
     <ClCompile Include="UT_StackAllocator.cpp" />
+    <ClCompile Include="UT_Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllocatorTestClass.h" />

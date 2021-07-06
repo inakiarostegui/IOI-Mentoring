@@ -11,8 +11,6 @@
 class IAllocator
 {
 public:
-	virtual ~IAllocator() {};
-
 	virtual void Clear() = 0;
 
 	static uintptr_t CalculatePadding(const uintptr_t& alloc_address, const size_t& alignment)
