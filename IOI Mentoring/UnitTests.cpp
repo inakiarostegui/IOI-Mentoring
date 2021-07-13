@@ -11,15 +11,36 @@
 const std::string PASS = "PASS";
 const std::string FAIL = ">>>>>>>>>>>>>>>>>>>>>>>>> FAIL <<<<<<<<<<<<<<<<<<<<<<<<";
 
-const std::array<std::string, 5> UT_TITLES = { "MOVE SEMANTICS", "LINEAR ALLOCATOR", "STACK ALLOCATOR", "POOL ALLOCATOR", "FREE LIST ALLOCATOR", };
+const std::array<std::string, 6> UT_TITLES = { "VECTORS", "MOVE SEMANTICS", "LINEAR ALLOCATOR", "STACK ALLOCATOR", "POOL ALLOCATOR", "FREE LIST ALLOCATOR", };
 
 using namespace UT;
 using namespace MoveSemantics;
 using namespace Allocator;
+using namespace Vectors;
 
 // Contains the unit tests by categories
 std::unordered_map<e_UTTypes, std::vector<UnitTest>> unit_tests =
 {
+    std::make_pair
+    (
+        e_UTTypes::e_vectors,
+        std::vector<UnitTest>
+        {
+            UnitTest{"RESERVE 0",               &reserve_0},
+            UnitTest{"RESERVE 1",               &reserve_1},
+            UnitTest{"PUSH BACK 0",             &push_back_0},
+            UnitTest{"PUSH BACK 1",             &push_back_1},
+            UnitTest{"PUSH BACK 2",             &push_back_2},
+            UnitTest{"EMPLACE BACK 0",          &emplace_back_0},
+            UnitTest{"EMPLACE BACK 1",          &emplace_back_1},
+            UnitTest{"EMPLACE BACK 2",          &emplace_back_2},
+            UnitTest{"POP BACK 0",              &pop_back_0},
+            UnitTest{"POP BACK 1",              &pop_back_1},
+            UnitTest{"CLEAR",                   &clear},
+            UnitTest{"SUBSCRIPT OPERATOR 0",    &subscript_0},
+            UnitTest{"PRODUCTION",              &prod},
+        }
+    ),
     std::make_pair
     (
         e_UTTypes::e_move_semantics,

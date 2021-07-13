@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <queue>
 #include <time.h>
+#include <optional>
 
 // Windows API
 #define WIN32_LEAN_AND_MEAN

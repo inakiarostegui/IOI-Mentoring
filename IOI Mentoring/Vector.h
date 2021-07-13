@@ -6,7 +6,7 @@
 
 #pragma once
 #include "pch.h"
-#include "PoolAllocator.h"
+#include "StackAllocator.h"
 
 #define GROWTH_MULTIPLIER 2u
 
@@ -29,7 +29,7 @@ template < typename T >
 class Vector
 {
 public:
-    Vector() : m_size(0u), m_capacity(0u)
+    Vector() : m_size(0u)
     {
         debug_print("Vector: DEFAULT CONSTRUCTED");
     }
@@ -48,17 +48,17 @@ public:
         delete[] m_container;
     }
 
-    Vector(const Vector& other) : m_container(other.m_container), m_size(other.m_size), m_capacity(other.m_capacity)
+    Vector(const Vector& other) : m_container(other.m_container), m_size(other.m_size)
     {
         debug_print("Vector: COPY CONSTRUCTOR");
     }
 
-    Vector(Vector&& other) noexcept : m_container(other.m_container), m_size(other.m_size), m_capacity(other.m_capacity)
+    Vector(Vector&& other) noexcept : m_container(other.m_container), m_size(other.m_size), m_allocator(other.m_allocator)
     {
         debug_print("Vector: MOVE OPERATOR");
 
+        other.m_allocator = StackAllocator();
         other.m_container = nullptr;
-        other.m_capacity = 0u;
         other.m_size = 0u;
     }
 
@@ -71,57 +71,55 @@ public:
             delete[] m_container;
 
             m_container = other.m_container;
-            m_capacity = other.m_capacity;
+            m_allocator = other.m_allocator;
             m_size = other.m_size;
 
+            other.m_allocator = StackAllocator();
             other.m_container = nullptr;
-            other.m_capacity = 0u;
             other.m_size = 0u;
         }
         return *this;
     }
 
     // Pushback and emplace back both look the same... Could we maybe make a function that encapsulates them?
-    decltype(auto) push_back(T&& value)
+    T* push_back(T&& value)
     {
         // If were out of space then grow
         check_and_grow();
 
         // Add the value to the back of the container
-        m_container[m_size] = std::forward<T>(value);
+        m_allocator.Allocate(sizeof(T));
+        (*this)[++m_size - 1] = std::forward<T>(value);
 
-        m_size++;
-
-        // Return a pointer to the element we added
-        return m_container + m_size - 1;
+        // This gives errors, still need to understand it
+        //new (m_allocator.Allocate(sizeof(T))) std::forward<T>(value);
+        
+        return &(*this)[m_size - 1];
     }
 
-    decltype(auto) push_back(const T& value)
+    T* push_back(const T& value)
     {
         check_and_grow();
 
-        m_container[m_size] = value;
+        m_allocator.Allocate(sizeof(T));
+        (*this)[++m_size - 1] = value;
 
-        m_size++;
-
-        return m_container + m_size - 1;
+        return &(*this)[m_size - 1];
     }
 
     template < typename ...Args >
-    decltype(auto) emplace_back(Args&&... args)
+    T* emplace_back(Args&&... args)
     {
         check_and_grow();
-
-        m_container[m_size] = T(std::forward<Args>(args)...);
         
-        m_size++;
+        new (m_allocator.Allocate(sizeof(T))) T(std::forward<Args>(args)...);
 
-        return m_container + m_size - 1;
+        return &(*this)[++m_size - 1];
     }
 
     void check_and_grow()
     {
-        if (m_size == m_capacity)
+        if (m_size == capacity())
             grow();
     }
 
@@ -129,43 +127,71 @@ public:
     {
         // No need to modify memory, we can just decrease the size
         if (!empty())
+        {
             m_size--;
+            m_allocator.Free();
+        }
         else
-            std::cout << "WARNING [Vector.h, Vector, T pop_back()]: Vector was empty." << std::endl;
+            std::cout << "ERROR [Vector.h, Vector, T pop_back()]: Vector was empty." << std::endl;
     }
 
     void clear()
     {
+        m_allocator.Clear();
         m_size = 0u;
     }
 
     // Resizes vector and grows if required
     void resize(const unsigned new_size)
     {
-        m_size = new_size;
+        if (m_size == new_size)
+            return;
 
-        if (m_size > m_capacity)
+        if (new_size > capacity())
+        {
+            m_size = new_size;
             grow();
+            return;
+        }
+
+        if (m_size < new_size)
+        {
+            for (unsigned i = 0u; i < std::abs(m_size - new_size); i++)
+                m_allocator.Free();
+        }
+        else
+        {
+            for (unsigned i = 0u; i < std::abs(m_size - new_size); i++)
+                m_allocator.Allocate(sizeof(T));
+        }
+
+        m_size = new_size;
     }
 
     // Reserves memory by copying to a new vector of the required capacity
     void reserve(unsigned&& new_capacity)
     {
-        if (new_capacity > m_capacity)
+        if (new_capacity > capacity())
         {
-            T* temp_container = m_container;
+            std::byte* temp_container = m_container;
 
-            m_capacity = new_capacity;
-            m_container = new T[new_capacity]();
+            // Create new container and allocator based on container
+            m_container = new std::byte[new_capacity * (sizeof(T) + sizeof(StackAllocator::StackAllocationFooter))]();
+            m_allocator.Init(std::span{ reinterpret_cast<std::byte*>(m_container), new_capacity * (sizeof(T) + sizeof(StackAllocator::StackAllocationFooter)) });
 
+            // If there was a container previously then copy the data to the new container and delete the old one
             if (temp_container != nullptr)
             {
-                std::memcpy(m_container, temp_container, sizeof(T) * m_size);
+                for (unsigned i = 0u; i < m_size; i++)
+                    std::memcpy(m_allocator.Allocate(sizeof(T)), temp_container + i * sizeof(T), sizeof(T));
+                // This can also be done like this and we dont have to have it in the loop:
+                //std::memcpy(m_container, temp_container, sizeof(T) * m_size);
+
                 delete[] temp_container;
             }
         }
         else
-            debug_print("WARNING [Vector.h, Vector, void reserve()]: New capacity was not larger than previous capacity.");
+            debug_print("ERROR [Vector.h, Vector, void reserve()]: New capacity was not larger than previous capacity.");
 
         /*If n is greater than the current vector capacity, the function causes the container to reallocate its storage increasing its capacity to n (or greater).
         In all other cases, the function call does not cause a reallocation and the vector capacity is not affected.
@@ -173,59 +199,75 @@ public:
         /*https://www.cplusplus.com/reference/vector/vector/reserve/*/
     }
 
-    unsigned size() const
+    size_t size() const
     {
         return m_size;
     }
 
-    unsigned capacity() const
+    size_t capacity() const
     {
-        return m_capacity;
+        return m_allocator.GetBufferSize() / (sizeof(T) + sizeof(StackAllocator::StackAllocationFooter));
+    }
+
+    StackAllocator* allocator()
+    {
+        return &m_allocator;
+    }
+
+    T* container() const
+    {
+        return reinterpret_cast<T*>(m_container);
     }
 
     bool empty() const
     {
-        return m_size == 0u;
+        return m_size == 0;
     }
 
     // If empty, grow allocates space for 1, else we grow taking into account the multiplier
     void grow()
     {
-        reserve(m_capacity == 0 ? 1 : m_capacity * GROWTH_MULTIPLIER);
+        reserve(capacity() == 0 ? 1 : capacity() * GROWTH_MULTIPLIER);
     }
 
     // Subscript operator
     T& operator[](const int index)
     {
-        if (static_cast<unsigned>(index) > m_size || index < 0)
+        if (m_container == nullptr)
         {
-            debug_print("ERROR [main.cpp, Vector, T& operator[](const int)]: Index not in container.");
-            assert(0);  // Is this the way to do things? Need to check up on that...
+            debug_print("ERROR [main.cpp, Vector, T& operator[](const int)]: Container was empty.");
+            assert(0);
         }
 
-        return m_container[index];
+        if (static_cast<unsigned>(index) >= m_size || index < 0)
+        {
+            debug_print("ERROR [main.cpp, Vector, T& operator[](const int)]: Index not in container.");
+            assert(0);
+        }
+
+        // Take the stack allocator footers into account when getting the data
+        return *reinterpret_cast<T*>(m_container + index * (sizeof(T) + sizeof(StackAllocator::StackAllocationFooter)));
     }
 
     #if DEBUG
     void print_stats()
     {
-        debug_print("Size: " + std::to_string(m_size) + "  |  Capacity: " + std::to_string(m_capacity));
+        debug_print("Size: " + std::to_string(m_size) + "  |  Capacity: " + capacity());
     }
 
     void print_contents()
     {
         for (int i = 0; i < m_size; i++)
-            std::cout << m_container[i] << " | ";
+            std::cout << (*this)[i] << " | ";
         std::cout << std::endl;
     }
     #endif
 
 private:
-    T* m_container = nullptr;
-    //PoolAllocator m_allocator;
+    std::byte* m_container = nullptr;
+    StackAllocator m_allocator;
 
-    unsigned m_size = 0u;
-    unsigned m_capacity = 0u;
+    size_t m_size = 0;
 };
 
 template <typename T, typename U>

@@ -18,6 +18,11 @@ public:
         debug_print("VectorTestClass: DESTRUCTED");
     }
 
+    VectorTestClass(const int& other_x, const float& other_y) : x(other_x), y(other_y)
+    {
+        debug_print("VectorTestClass: CUSTOM CONSTRUCTOR COPY");
+    }
+
     VectorTestClass(int&& other_x, float&& other_y) : x(other_x), y(other_y)
     {
         debug_print("VectorTestClass: CUSTOM CONSTRUCTOR");

@@ -11,7 +11,7 @@
 
 namespace UT
 {
-	enum class e_UTTypes { e_move_semantics, e_alloc_linear, e_alloc_stack, e_alloc_pool, e_alloc_freelist };
+	enum class e_UTTypes { e_vectors, e_move_semantics, e_alloc_linear, e_alloc_stack, e_alloc_pool, e_alloc_freelist };
 
 	namespace MoveSemantics
 	{
@@ -70,7 +70,25 @@ namespace UT
 		bool freelist_prod();					// Free chunk concatenation
 	}
 
+	namespace Vectors
+	{
+		bool reserve_0();						// Basic reserve
+		bool reserve_1();						// Invalid reserve
+		bool push_back_0();						// From empty
+		bool push_back_1();						// Basic push_back
+		bool push_back_2();						// Force grow
+		bool emplace_back_0();					// From empty
+		bool emplace_back_1();					// Basic push_back
+		bool emplace_back_2();					// Force grow
+		bool pop_back_0();						// Invalid pop_back
+		bool pop_back_1();						// Basic pop_bac
+		bool clear();							
+		bool subscript_0();						
+		bool prod();							// Pushing and popping
+	}
+
 	void RunUnitTests(std::vector<UT::e_UTTypes>&& test_types_to_run = { 
+																		  e_UTTypes::e_vectors,
 																		  e_UTTypes::e_move_semantics,
 																		  e_UTTypes::e_alloc_linear,
 																		  e_UTTypes::e_alloc_stack,
