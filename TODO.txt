@@ -1,11 +1,10 @@
 CODING:
-[VECTOR ALLOCATOR]
 [FALLBACK ALLOCATOR]
 
 RESEARCH:
-
-// IF MEMPCY FAILS, COPY MANUALLY
-// ALLOCATOR SHOULD JUST MANAGE THE DATA
+std::decay
+std::string_view
+smart pointers
 ---------------------------------------------------------------------------------------------------------------------------------
 
 POINTERS AND MEMORY LAYOUT
