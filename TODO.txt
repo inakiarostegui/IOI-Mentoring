@@ -2,9 +2,8 @@ CODING:
 [FALLBACK ALLOCATOR]
 
 RESEARCH:
-std::decay
-std::string_view
-smart pointers
+
+
 ---------------------------------------------------------------------------------------------------------------------------------
 
 POINTERS AND MEMORY LAYOUT
